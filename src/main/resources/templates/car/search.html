@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Kết quả tìm kiếm</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <style>
+    .card-img-top {
+      height: 200px;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-5">
+  <h3>Kết quả tìm kiếm cho: "<span th:text="${keyword}"></span>"</h3>
+  <hr>
+
+  <!-- Nếu có kết quả -->
+  <div class="row" th:if="${cars.size() > 0}">
+    <div class="col-md-4 mb-4" th:each="car : ${cars}">
+      <div class="card h-100 shadow-sm">
+        <!-- Ảnh chính -->
+        <img th:src="@{${car.imageUrl}}" class="card-img-top" th:alt="${car.name}">
+
+        <div class="card-body">
+          <!-- Tên xe -->
+          <h5 class="card-title" th:text="${car.name}"></h5>
+
+          <!-- Giá, loại xe, hãng -->
+          <p class="card-text mb-2">
+            <b>Giá/ngày:</b>
+            <span th:text="${#numbers.formatDecimal(car.pricePerDay, 0, 'COMMA', 0, 'POINT')}"></span> VND <br>
+            <b>Loại:</b> <span th:text="${car.carType.name}"></span><br>
+            <b>Hãng:</b> <span th:text="${car.brand.name}"></span>
+          </p>
+
+          <!-- Trạng thái -->
+          <p class="mb-2">
+            <b>Trạng thái:</b>
+            <span th:text="${car.status == 'available' ? 'Sẵn sàng' : 'Bảo dưỡng'}"></span>
+          </p>
+
+          <!-- Nút xem chi tiết -->
+          <a th:href="@{/car/{id}(id=${car.id})}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nếu không có kết quả -->
+  <div th:if="${cars.size() == 0}">
+    <p class="text-danger">Không tìm thấy xe nào phù hợp.</p>
+  </div>
+</div>
+
+</body>
+</html>

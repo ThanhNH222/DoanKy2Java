@@ -1,0 +1,48 @@
+[
+  {
+    "id": 1,
+    "name": "TOYOTA VELOZ CROSS 2022",
+    "licensePlate": "29A-12345",
+    "seatNumber": 5,
+    "pricePerDay": 500000,
+    "hasDriver": false,
+    "status": "available",
+    "description": "Xe sedan 5 chỗ, máy êm, tiết kiệm nhiên liệu",
+    "imageUrl": "/img/TOYOTA VELOZ CROSS 2022 1.jpg",
+    "carType": { "id": 1, "name": "Sedan" },
+    "brand": { "id": 1, "name": "Toyota" },
+    "rentalRates": [
+      { "id": 1, "rateType": "hour", "hasDriver": false, "price": 100000 },
+      { "id": 2, "rateType": "day", "hasDriver": false, "price": 500000 },
+      { "id": 3, "rateType": "year", "hasDriver": false, "price": 120000000 }
+    ],
+    "carDeposit": { "id": 1, "depositAmount": 2000000 },
+    "images": [
+      { "id": 1, "url": "/img/TOYOTA VELOZ CROSS 2022 1.1.jpg" },
+      { "id": 2, "url": "/img/TOYOTA VELOZ CROSS 2022 1.2.jpg" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "HYUNDAI ACCENT 2019",
+    "licensePlate": "30A-67890",
+    "seatNumber": 7,
+    "pricePerDay": 1200000,
+    "hasDriver": true,
+    "status": "available",
+    "description": "SUV 7 chỗ, rộng rãi, mạnh mẽ",
+    "imageUrl": "/img/HYUNDAI ACCENT 2019 2.1.jpg",
+    "carType": { "id": 2, "name": "SUV" },
+    "brand": { "id": 2, "name": "Hyundai" },
+    "rentalRates": [
+      { "id": 4, "rateType": "hour", "hasDriver": false, "price": 200000 },
+      { "id": 5, "rateType": "day", "hasDriver": false, "price": 1200000 },
+      { "id": 6, "rateType": "year", "hasDriver": false, "price": 250000000 }
+    ],
+    "carDeposit": { "id": 2, "depositAmount": 3000000 },
+    "images": [
+      { "id": 3, "url": "/img/HYUNDAI ACCENT 2019 2.1.jpg" },
+      { "id": 4, "url": "/img/HYUNDAI ACCENT 2019 2.2.jpg" }
+    ]
+  }
+]

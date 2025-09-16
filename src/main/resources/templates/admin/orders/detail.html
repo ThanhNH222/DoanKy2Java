@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn thuê xe</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+
+</head>
+<body>
+<!--<body class="bg-light py-4">-->
+
+<div class="sidebar">
+    <h4 class="text-white mb-4">🚗 Car Rental</h4>
+    <a href="/admin">📊 Dashboard</a>
+    <a href="/admin/cars">🚘 Cars</a>
+    <a href="/admin/orders" class="active">👥 Rental Order</a>
+</div>
+
+<div class="container">
+    <!-- Tiêu đề -->
+    <h1 class="mb-4">Chi tiết đơn thuê #<span th:text="${order.id}"></span></h1>
+
+    <!-- Hàng 1: Thông tin + Ghi chú -->
+    <div class="row g-4">
+        <!-- Cột trái: khách hàng + xe -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">Thông tin khách hàng</div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <tr>
+                            <th style="width: 30%">Họ tên</th>
+                            <td th:text="${order.customerName}"></td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td th:text="${order.customerEmail}"></td>
+                        </tr>
+                        <tr>
+                            <th>Số điện thoại</th>
+                            <td th:text="${order.customerPhone}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">Thông tin xe thuê</div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <tr>
+                            <th style="width: 30%">Tên xe</th>
+                            <td th:text="${order.car.name}"></td>
+                        </tr>
+                        <tr>
+                            <th>Biển số</th>
+                            <td th:text="${order.car.licensePlate}"></td>
+                        </tr>
+                        <tr>
+                            <th>Ngày giao xe</th>
+                            <td th:text="${order.pickupDateTime}"></td>
+                        </tr>
+                        <tr>
+                            <th>Địa chỉ giao</th>
+                            <td th:text="${order.pickupLocation}"></td>
+                        </tr>
+                        <tr>
+                            <th>Ngày trả xe</th>
+                            <td th:text="${order.dropoffDateTime}"></td>
+                        </tr>
+                        <tr>
+                            <th>Địa chỉ trả</th>
+                            <td th:text="${order.returnLocation}"></td>
+                        </tr>
+                        <tr>
+                            <th>Tiền thuê</th>
+                            <td th:text="${order.rentalPrice != null ? T(java.lang.String).format('%,.0f₫', order.rentalPrice) : '0₫'}"></td>
+                        </tr>
+                        <tr>
+                            <th>Tiền cọc</th>
+                            <td th:text="${order.depositAmount != null ? T(java.lang.String).format('%,.0f₫', order.depositAmount) : '0₫'}"></td>
+                        </tr>
+                        <tr>
+                            <th>Phí ship</th>
+                            <td th:text="${order.shippingFee != null ? T(java.lang.String).format('%,.0f₫', order.shippingFee) : '0₫'}"></td>
+                        </tr>
+
+                        <tr>
+                            <th>Trạng thái</th>
+                            <td th:text="${order.status}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: ghi chú admin -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <span>Ghi chú của Admin</span>
+                    <button class="btn btn-sm btn-light" data-bs-toggle="collapse" data-bs-target="#editNotes">
+                        ✏️
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Hiển thị ghi chú -->
+                    <div th:if="${order.adminNotes != null}">
+                        <p th:text="${order.adminNotes}"></p>
+                    </div>
+                    <div th:if="${order.adminNotes == null}">
+                        <em>Chưa có ghi chú</em>
+                    </div>
+
+                    <!-- Form sửa/ghi chú -->
+                    <div class="collapse mt-3" id="editNotes">
+                        <form th:action="@{/admin/orders/update-notes}" method="post">
+                            <input type="hidden" name="rentalId" th:value="${order.id}">
+                            <textarea class="form-control mb-2" name="adminNotes" rows="4"
+                                      th:text="${order.adminNotes}"></textarea>
+                            <button class="btn btn-primary btn-sm">Lưu</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hàng 2: Hợp đồng + Ảnh tình trạng xe -->
+    <div class="row g-4 mt-4">
+        <!-- Hợp đồng -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">Hợp đồng</div>
+                <div class="card-body">
+                    <form th:action="@{/admin/orders/upload-contract}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="rentalId" th:value="${order.id}">
+                        <div class="mb-3">
+                            <label class="form-label">Tải ảnh hợp đồng</label>
+                            <input type="file" name="contractImages" multiple class="form-control" accept="image/*">
+                        </div>
+                        <button class="btn btn-primary">Lưu hợp đồng</button>
+                    </form>
+
+                    <!-- Hiển thị ảnh hợp đồng -->
+                    <div class="mt-3" th:if="${#lists.isEmpty(contractImages)}">
+                        <em>Chưa cập nhật hợp đồng</em>
+                    </div>
+                    <div class="mt-3" th:if="${!#lists.isEmpty(contractImages)}">
+                        <p class="fw-bold">Ảnh hợp đồng đã ký:</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a th:each="img : ${contractImages}" th:href="@{${img.imageUrl}}" target="_blank">
+                                <img th:src="@{${img.imageUrl}}" class="img-thumbnail" style="max-width:150px;">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ảnh tình trạng xe -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">Ảnh tình trạng xe</div>
+                <div class="card-body">
+
+                    <!-- Upload ảnh giao xe -->
+                    <form th:action="@{/admin/orders/upload-handover}" method="post" enctype="multipart/form-data" class="mb-4">
+                        <input type="hidden" name="rentalId" th:value="${order.id}">
+                        <label class="form-label fw-bold">Tải ảnh lúc giao xe</label>
+                        <div class="input-group mb-2">
+                            <input type="file" name="handoverImages" multiple class="form-control" accept="image/*">
+                            <button class="btn btn-primary">Upload</button>
+                        </div>
+                    </form>
+
+                    <!-- Upload ảnh nhận xe -->
+                    <form th:action="@{/admin/orders/upload-return}" method="post" enctype="multipart/form-data" class="mb-4">
+                        <input type="hidden" name="rentalId" th:value="${order.id}">
+                        <label class="form-label fw-bold">Tải ảnh lúc nhận xe</label>
+                        <div class="input-group mb-2">
+                            <input type="file" name="returnImages" multiple class="form-control" accept="image/*">
+                            <button class="btn btn-primary">Upload</button>
+                        </div>
+                    </form>
+
+                    <!-- Hiển thị ảnh giao xe -->
+                    <div class="mt-3" th:if="${!#lists.isEmpty(handoverImages)}">
+                        <p class="fw-bold">Ảnh giao xe:</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a th:each="img : ${handoverImages}" th:href="@{${img.imageUrl}}" target="_blank">
+                                <img th:src="@{${img.imageUrl}}" class="img-thumbnail" style="max-width:150px;">
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Hiển thị ảnh nhận xe -->
+                    <div class="mt-3" th:if="${!#lists.isEmpty(returnImages)}">
+                        <p class="fw-bold">Ảnh nhận xe:</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a th:each="img : ${returnImages}" th:href="@{${img.imageUrl}}" target="_blank">
+                                <img th:src="@{${img.imageUrl}}" class="img-thumbnail" style="max-width:150px;">
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<br>
+<form th:action="@{/admin/orders/send-confirm-email}" method="post">
+    <input type="hidden" name="orderId" th:value="${order.id}" />
+    <button type="submit" class="btn btn-primary w-100">Gửi mail xác nhận</button>
+</form>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

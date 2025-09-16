@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${car.name}">Car Details</title>
+
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Montserrat:wght@100;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+
+    <!-- Customized Bootstrap -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+        .thumbnail-img {width:100px;height:70px;object-fit:cover;cursor:pointer;transition:transform .2s ease;}
+        .thumbnail-img:hover {transform: scale(1.1);border: 2px solid #007bff;}
+        .booking-form {background: #6c757d;padding: 25px;border-radius: 8px;color: white;}
+        .booking-form h4 {margin-bottom: 20px;text-align: center;}
+        .input-group span {white-space: nowrap;}
+    </style>
+</head>
+<body>
+<nav th:replace="fragments/nav :: nav"></nav>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+
+            <!-- Left: Images + extra info -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-12">
+                    <!-- Main Image -->
+                    <div class="border rounded mb-3">
+                        <img id="mainImage" th:src="${car.imageUrl}" class="img-fluid rounded w-100" alt="Car Image">
+                    </div>
+
+                    <div class="d-flex flex-row flex-wrap gap-2 mt-2"
+                         th:if="${car.images != null and !car.images.isEmpty()}">
+                        <img th:each="img : ${car.images}"
+                             th:src="${img.imageUrl}"
+                             class="img-thumbnail thumbnail-img"
+                             alt="Extra image"
+                             onclick="changeMainImage(this)">
+                    </div>
+
+                    <div class="row g-5">
+                        <!-- Left: Car Information -->
+                        <div class="col-lg-8">
+                            <div class="p-3 bg-light rounded shadow-sm mb-4">
+                                <h5>Car Information</h5>
+                                <h2 class="mb-3" th:text="${car.name}">Car Name</h2>
+                                <p th:text="${car.description}"></p>
+
+                                <ul class="list-unstyled">
+                                    <li><strong>License Plate:</strong> <span th:text="${car.licensePlate}"></span></li>
+                                    <li><strong>Number of Seats:</strong> <span th:text="${car.seatNumber}"></span></li>
+                                    <li><strong>Car Type:</strong> <span th:text="${car.carType.name}"></span></li>
+                                    <li><strong>Brand:</strong> <span th:text="${car.brand.name}"></span></li>
+                                    <li><strong>Status:</strong> <span th:text="${car.status}"></span></li>
+                                    <li><strong>Deposit:</strong>
+                                        <span th:text="${#numbers.formatDecimal(car.depositAmount, 0, 'POINT', 0, 'COMMA')} + ' VND'"></span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Extra Block -->
+                            <div class="p-3 bg-light rounded shadow-sm">
+                                <h5>Additional Information</h5>
+                                <p>Here you can add: rental policies, customer reviews, or detailed pricing…</p>
+                            </div>
+                        </div>
+
+                        <!-- Right: Booking Form -->
+                        <div class="col-lg-4">
+                            <div class="booking-form">
+                                <h4>BOOK NOW</h4>
+                                <form id="bookingForm" th:action="@{/payment}" method="post" th:data-car-id="${car.id}" onsubmit="beforeSubmit()">
+                                    <input type="hidden" name="carId" th:value="${car.id}" />
+                                    <input type="hidden" name="isStorePickup" id="isStorePickup" value="false" />
+
+                                    <!-- Rental type -->
+                                    <div th:if="${car.rentalRates != null and !car.rentalRates.isEmpty()}" class="col-12">
+                                        <div class="input-group">
+                                            <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                <span class="fas fa-tag"></span>
+                                                <span class="ms-1">Rental Type</span>
+                                            </div>
+                                            <select class="form-select" id="rentalType" name="rentalType" onchange="updatePrice()" required>
+                                                <option value="">-- Select rental type --</option>
+                                                <option th:each="rate : ${car.rentalRates}"
+                                                        th:value="${rate.rateType}"
+                                                        th:data-price="${rate.price}"
+                                                        th:text="${rate.rateType}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="mt-2 text-end">
+                                            <span class="text-light">Price: </span>
+                                            <span id="rentalPrice" class="text-warning fw-bold"
+                                                  th:text="${#numbers.formatDecimal(car.rentalRates[0].price, 0, 'COMMA', 0, 'POINT')}">...</span> usd
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <!-- Store pickup -->
+                                        <div class="col-12">
+                                            <div class="input-group">
+                                                <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                    <span class="fas fa-store"></span>
+                                                    <span class="ms-1">Pickup/Drop-off at Store</span>
+                                                </div>
+                                                <select class="form-select" id="storeLocation" name="storeLocation"
+                                                        onchange="document.getElementById('pickupLocation').value = this.options[this.selectedIndex].text">
+                                                    <option value="">-- Select store --</option>
+                                                    <option value="1">Branch 1 - 123 Le Loi, District 1</option>
+                                                    <option value="2">Branch 2 - 456 Nguyen Hue, District 3</option>
+                                                    <option value="3">Branch 3 - 789 Hai Ba Trung, District 5</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Other pickup location -->
+                                        <div class="col-12">
+                                            <label for="storeLocation" class="form-label">Other Address (not store)</label>
+                                            <div class="input-group">
+                                                <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                    <span class="fas fa-map-marker-alt"></span>
+                                                    <span class="ms-1">Pickup Location</span>
+                                                </div>
+                                                <input class="form-control" type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter pickup address" required>
+                                            </div>
+                                        </div>
+
+                                        <!-- Drop-off -->
+                                        <div class="col-12">
+                                            <div class="input-group">
+                                                <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                    <span class="fas fa-map-marker-alt"></span>
+                                                    <span class="ms-1">Drop-off Location</span>
+                                                </div>
+                                                <input class="form-control" type="text" id="dropoffLocation" name="dropoffLocation" placeholder="Enter drop-off address" required>
+                                            </div>
+                                        </div>
+
+                                        <!-- Pickup date/time -->
+                                        <div class="col-12">
+                                            <div class="input-group">
+                                                <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                    <span class="fas fa-calendar-alt"></span>
+                                                    <span class="ms-1">Pickup Date</span>
+                                                </div>
+                                                <input id="pickupDate" class="form-control" type="date" name="pickupDate" required>
+                                                <select id="pickupTime" class="form-select ms-3" name="pickupTime" required>
+                                                    <option value="">Select Time</option>
+                                                    <option th:each="h : ${#numbers.sequence(0,23)}"
+                                                            th:value="${T(java.lang.String).format('%02d:00', h)}"
+                                                            th:text="${T(java.lang.String).format('%02d:00', h)}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Drop-off date/time -->
+                                        <div class="col-12">
+                                            <div class="input-group">
+                                                <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                                                    <span class="fas fa-calendar-alt"></span>
+                                                    <span class="ms-1">Drop-off Date</span>
+                                                </div>
+                                                <input id="dropoffDate" class="form-control" type="date" name="dropoffDate" required>
+                                                <select id="dropoffTime" class="form-select ms-3" name="dropoffTime" required>
+                                                    <option value="">Select Time</option>
+                                                    <option th:each="h : ${#numbers.sequence(0,23)}"
+                                                            th:value="${T(java.lang.String).format('%02d:00', h)}"
+                                                            th:text="${T(java.lang.String).format('%02d:00', h)}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Availability message -->
+                                        <div class="col-12">
+                                            <div id="availabilityMessage"></div>
+                                        </div>
+
+                                        <!-- Customer info -->
+                                        <div class="mb-3">
+                                            <label for="customerName" class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" id="customerName" name="customerName" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="customerPhone" class="form-label">Phone Number</label>
+                                            <input type="text" class="form-control" id="customerPhone" name="customerPhone" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="customerEmail" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="customerEmail" name="customerEmail" required>
+                                        </div>
+
+                                        <div class="col-12 mt-3">
+                                            <button class="btn btn-light w-100 py-2" type="submit">Book Now</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<!-- JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/lib/wow/wow.min.js}"></script>
+<script th:src="@{/lib/easing/easing.min.js}"></script>
+<script th:src="@{/lib/waypoints/waypoints.min.js}"></script>
+<script th:src="@{/lib/counterup/counterup.min.js}"></script>
+<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const storeSelect = document.getElementById("storeLocation");
+    const pickupInput = document.getElementById("pickupLocation");
+    const dropoffInput = document.getElementById("dropoffLocation");
+
+    function toggleAddressFields() {
+        if (storeSelect.value) {
+            // Nếu chọn cơ sở cửa hàng → ẩn và bỏ required
+            pickupInput.style.display = "none";
+            dropoffInput.style.display = "none";
+            pickupInput.required = false;
+            dropoffInput.required = false;
+            pickupInput.value = "";
+            dropoffInput.value = "";
+            document.getElementById("isStorePickup").value = "true"; // ✔ Có chọn cửa hàng
+
+        } else {
+            // Nếu KHÔNG chọn cơ sở cửa hàng → hiện và bắt buộc nhập
+            pickupInput.style.display = "block";
+            dropoffInput.style.display = "block";
+            pickupInput.required = true;
+            dropoffInput.required = true;
+            document.getElementById("isStorePickup").value = "false"; // ❌ Không chọn cửa hàng
+        }
+    }
+
+    function beforeSubmit() {
+    const storeSelect = document.getElementById("storeLocation");
+    const isStorePickupInput = document.getElementById("isStorePickup");
+
+    // Gán lại giá trị đúng
+    isStorePickupInput.value = storeSelect.value ? "true" : "false";
+}
+
+    // chạy khi load trang
+    toggleAddressFields();
+
+    // chạy khi thay đổi lựa chọn
+    storeSelect.addEventListener("change", toggleAddressFields);
+});
+
+    function changeMainImage(imgElement) {
+        document.getElementById('mainImage').src = imgElement.src;
+    }
+    function updatePrice() {
+        const select = document.getElementById('rentalType');
+        const price = select.options[select.selectedIndex].dataset.price;
+        document.getElementById('rentalPrice').innerText = Number(price).toLocaleString();
+    }
+    async function checkAvailability() {
+      const bookingForm = document.getElementById("bookingForm");
+      const carId = bookingForm.dataset.carId;
+
+      const pickupDate = document.getElementById("pickupDate").value;
+      const pickupTime = document.getElementById("pickupTime").value;
+      const dropoffDate = document.getElementById("dropoffDate").value;
+      const dropoffTime = document.getElementById("dropoffTime").value;
+
+      if (!pickupDate || !pickupTime || !dropoffDate || !dropoffTime) return;
+
+      try {
+        const response = await fetch(`/car/check-availability?carId=${carId}&pickupDate=${pickupDate}&pickupTime=${pickupTime}&dropoffDate=${dropoffDate}&dropoffTime=${dropoffTime}`);
+        const text = await response.text();
+
+        const messageBox = document.getElementById("availabilityMessage");
+        if (text === "available") {
+          messageBox.innerHTML = `<span class="text-success">✅ Xe có sẵn để đặt.</span>`;
+        } else if (text === "unavailable") {
+          messageBox.innerHTML = `<span class="text-danger">❌ Xe đã có người đặt trong khoảng thời gian này.</span>`;
+        } else {
+          messageBox.innerHTML = `<span class="text-warning">⚠️ Không kiểm tra được tình trạng xe.</span>`;
+        }
+      } catch (error) {
+        console.error("Lỗi kiểm tra:", error);
+      }
+    }
+
+
+
+
+    document.getElementById("pickupDate").addEventListener("change", checkAvailability);
+    document.getElementById("pickupTime").addEventListener("change", checkAvailability);
+    document.getElementById("dropoffDate").addEventListener("change", checkAvailability);
+    document.getElementById("dropoffTime").addEventListener("change", checkAvailability);
+</script>
+</body>
+</html>

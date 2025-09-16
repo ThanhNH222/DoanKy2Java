@@ -1,0 +1,96 @@
+/* ===== Global ===== */
+body {
+    background: #0f172a;
+    color: #fff;
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: #1e293b;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+}
+.sidebar h4 {
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: #cbd5e1;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.sidebar a:hover,
+.sidebar a.active {
+    background: #334155;
+    color: #fff;
+}
+
+/* ===== Main content ===== */
+.content {
+    margin-left: 240px; /* sidebar width */
+    padding: 24px;
+}
+
+/* ===== Cards ===== */
+.card-dark {
+    background: #1e293b;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    color: #fff;
+    padding: 24px;
+    width: 100%; /* kéo dài hết content */
+    max-width: none; /* bỏ giới hạn */
+    margin-bottom: 20px;
+}
+
+/* ===== Buttons ===== */
+.btn-soft {
+    border-radius: 8px;
+}
+
+/* ===== Form elements ===== */
+input, textarea, select, .form-control {
+    background: #334155;
+    color: #fff;
+    border: none;
+}
+input:focus, textarea:focus, select:focus, .form-control:focus {
+    background: #475569;
+    color: #fff;
+    box-shadow: none;
+}
+
+/* ===== Image preview ===== */
+#imagePreview {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 8px;
+    display: block;
+    margin-top: 10px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .content {
+        margin-left: 0;
+        padding: 16px;
+    }
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 10px;
+    }
+}

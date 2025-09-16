@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh toán - [[${car.name}]]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <style>
+        .thumbnail-img {width:100px;height:70px;object-fit:cover;cursor:pointer;transition:transform .2s ease;}
+        .thumbnail-img:hover {transform: scale(1.1);border: 2px solid #007bff;}
+        .payment-summary {background: #f8f9fa;padding:20px;border-radius:8px;margin-bottom:20px;}
+        .payment-summary h4 {margin-bottom:15px;}
+    </style>
+</head>
+<body>
+<nav th:replace="fragments/nav :: nav"></nav>
+
+<div class="container py-5">
+    <div class="row g-5">
+        <!-- Cột 1: Ảnh xe -->
+        <div class="col-lg-4">
+            <div class="border rounded">
+                <img id="mainImage" th:src="${car.imageUrl}" class="img-fluid rounded" alt="Car Image">
+            </div>
+            <div class="mt-3 d-flex flex-wrap gap-2"
+                 th:if="${car.images != null and !car.images.isEmpty()}">
+                <img th:each="img : ${car.images}"
+                     th:src="${img.imageUrl}"
+                     class="img-thumbnail thumbnail-img"
+                     alt="Extra image"
+                     onclick="changeMainImage(this)">
+            </div>
+        </div>
+
+        <!-- Cột 2: Thông tin & thanh toán -->
+        <div class="col-lg-8">
+            <div class="payment-summary">
+                <h4>Thông tin khách hàng</h4>
+                <p><strong>Họ và tên:</strong> <span th:text="${customerName}"></span></p>
+                <p><strong>Số điện thoại:</strong> <span th:text="${customerPhone}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${customerEmail}"></span></p>
+
+                <h4>Thông tin xe</h4>
+                <ul class="list-unstyled mb-3">
+                    <li><strong>Tên xe:</strong> <span th:text="${car.name}"></span></li>
+                    <li><strong>Biển số:</strong> <span th:text="${car.licensePlate}"></span></li>
+                    <li><strong>Số ghế:</strong> <span th:text="${car.seatNumber}"></span></li>
+                    <li><strong>Loại xe:</strong> <span th:text="${car.carType.name}"></span></li>
+                    <li><strong>Hãng xe:</strong> <span th:text="${car.brand.name}"></span></li>
+                    <li><strong>Tài xế:</strong> <span th:text="${car.hasDriver ? 'Có tài xế' : 'Tự lái'}"></span></li>
+                    <li><strong>Tiền cọc:</strong> <span th:text="${#numbers.formatDecimal(car.depositAmount,0,'COMMA',0,'POINT')} + ' VND'"></span></li>
+                </ul>
+
+                <h4>Thông tin thuê xe</h4>
+                <p><strong>Hình thức thuê:</strong> <span th:text="${rentalType}"></span></p>
+                <p><strong>Thời gian:</strong> <span th:text="${pickupDateTime} + ' → ' + ${dropoffDateTime}"></span></p>
+                <p><strong>Nơi nhận:</strong> <span th:text="${pickupLocation}"></span></p>
+                <p><strong>Nơi trả:</strong> <span th:text="${dropoffLocation}"></span></p>
+                <p><strong>Giá thuê:</strong> <span th:text="${#numbers.formatDecimal(rentalPrice,0,'COMMA',0,'POINT')} + ' VND'"></span></p>
+                <p><strong>Phí ship:</strong> <span th:text="${shippingFee} + ' VND'"></span></p>
+                <hr>
+                <h5>Tổng tiền cọc : <span class="text-danger fw-bold" th:text="${#numbers.formatDecimal(totalPayment,0,'COMMA',0,'POINT')} + ' VND'"></span></h5>
+            </div>
+
+            <div class="booking-form">
+                <form th:action="@{/pay}" method="get">
+                    <input type="hidden" name="amount" th:value="${totalPayment}" />
+                    <input type="hidden" name="currency" value="USD" />
+                    <input type="hidden" name="carId" th:value="${car.id}" />
+                    <input type="hidden" name="rentalType" th:value="${rentalType}" />
+                    <input type="hidden" name="pickupDateTime" th:value="${pickupDateTime}" />
+                    <input type="hidden" name="dropoffDateTime" th:value="${dropoffDateTime}" />
+                    <input type="hidden" name="customerName" th:value="${customerName}" />
+                    <input type="hidden" name="customerPhone" th:value="${customerPhone}" />
+                    <input type="hidden" name="customerEmail" th:value="${customerEmail}" />
+
+                    <button type="submit" class="btn btn-primary w-100">Thanh toán PayPal</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function changeMainImage(imgElement) {
+        document.getElementById('mainImage').src = imgElement.src;
+    }
+</script>
+</body>
+</html>
