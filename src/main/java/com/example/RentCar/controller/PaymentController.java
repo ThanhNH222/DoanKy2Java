@@ -32,7 +32,7 @@ public class PaymentController {
     @Autowired
     private PaypalService paypalService;
 
-    private static final double SHIPPING_FEE = 22222;
+    private static final double SHIPPING_FEE = 22;
 
     /** Hiển thị trang thanh toán */
     @PostMapping("/payment")
@@ -45,6 +45,9 @@ public class PaymentController {
                               @RequestParam(required = false) String customerName,
                               @RequestParam(required = false) String customerPhone,
                               @RequestParam(required = false) String customerEmail,
+                              @RequestParam(required = false) String pickupLocation,
+                              @RequestParam(required = false) String dropoffLocation,
+                              @RequestParam(required = false) String storeLocation,
                               Model model) {
 
         Car car = carRepository.findById(carId)
@@ -63,6 +66,27 @@ public class PaymentController {
         BigDecimal shippingFee = BigDecimal.valueOf(SHIPPING_FEE);
         BigDecimal totalPayment = depositAmount.add(shippingFee);
 
+        // Xác định địa chỉ hiển thị
+        String finalPickupLocation = pickupLocation;
+        String finalDropoffLocation = dropoffLocation;
+
+        if (storeLocation != null && !storeLocation.isEmpty()) {
+            // Nếu chọn cửa hàng, hiển thị địa chỉ cửa hàng theo value
+            switch (storeLocation) {
+                case "1":
+                    finalPickupLocation = finalDropoffLocation = "Branch 1 - 123 Le Loi, District 1";
+                    break;
+                case "2":
+                    finalPickupLocation = finalDropoffLocation = "Branch 2 - 456 Nguyen Hue, District 3";
+                    break;
+                case "3":
+                    finalPickupLocation = finalDropoffLocation = "Branch 3 - 789 Hai Ba Trung, District 5";
+                    break;
+                default:
+                    break;
+            }
+        }
+
         model.addAttribute("car", car);
         model.addAttribute("customerName", customerName);
         model.addAttribute("customerPhone", customerPhone);
@@ -74,9 +98,12 @@ public class PaymentController {
         model.addAttribute("shippingFee", shippingFee);
         model.addAttribute("depositAmount", depositAmount);
         model.addAttribute("totalPayment", totalPayment);
+        model.addAttribute("pickupLocation", finalPickupLocation);
+        model.addAttribute("dropoffLocation", finalDropoffLocation);
 
         return "car/payment";
     }
+
 
     /** Xử lý thanh toán PayPal */
     @GetMapping("/pay")

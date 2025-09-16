@@ -30,6 +30,8 @@ public class Car {
     private Boolean hasDriver;
 
     private String status;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "image_url")
@@ -42,72 +44,113 @@ public class Car {
 
     // Quan hệ với CarBrand
     @ManyToOne
-    @JoinColumn(name= "brand_id")
+    @JoinColumn(name = "brand_id")
     private CarBrand brand;
 
-    // Giá thuê (RentalRate)
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private java.util.List<CarImage> images = new java.util.ArrayList<>();
+
+    public java.util.List<CarImage> getImages() {
+        return images;
+    }
+
+    public void setImages(java.util.List<CarImage> images) {
+        this.images = images;
+    }
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RentalRate> rentalRates = new ArrayList<>();
 
-    // Tiền đặt cọc
-    @OneToOne(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
-    private CarDeposit carDeposit;
+    public List<RentalRate> getRentalRates() {
+        return rentalRates;
+    }
 
-    // Danh sách ảnh
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CarImage> images = new ArrayList<>();
+    public void setRentalRates(List<RentalRate> rentalRates) {
+        this.rentalRates = rentalRates;
+    }
 
-    // Getter & Setter
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    // ===== Getter & Setter =====
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getLicensePlate() { return licensePlate; }
-    public void setLicensePlate(String licensePlate) { this.licensePlate = licensePlate; }
-
-    public Integer getSeatNumber() { return seatNumber; }
-    public void setSeatNumber(Integer seatNumber) { this.seatNumber = seatNumber; }
-
-    public BigDecimal getPricePerDay() { return pricePerDay; }
-    public void setPricePerDay(BigDecimal pricePerDay) { this.pricePerDay = pricePerDay; }
-
-    public Boolean getHasDriver() { return hasDriver; }
-    public void setHasDriver(Boolean hasDriver) { this.hasDriver = hasDriver; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
-    public CarType getCarType() { return carType; }
-    public void setCarType(CarType carType) { this.carType = carType; }
-
-    public CarBrand getBrand() { return brand; }
-    public void setBrand(CarBrand brand) { this.brand = brand; }
-
-    public List<RentalRate> getRentalRates() { return rentalRates; }
-    public void setRentalRates(List<RentalRate> rentalRates) { this.rentalRates = rentalRates; }
-
-    public CarDeposit getCarDeposit() { return carDeposit; }
-    public void setCarDeposit(CarDeposit carDeposit) { this.carDeposit = carDeposit; }
-
-    public List<CarImage> getImages() { return images; }
-    public void setImages(List<CarImage> images) { this.images = images; }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public BigDecimal getDepositAmount() {
         return depositAmount;
     }
-
     public void setDepositAmount(BigDecimal depositAmount) {
         this.depositAmount = depositAmount;
     }
 
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
+    public Integer getSeatNumber() {
+        return seatNumber;
+    }
+    public void setSeatNumber(Integer seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public BigDecimal getPricePerDay() {
+        return pricePerDay;
+    }
+    public void setPricePerDay(BigDecimal pricePerDay) {
+        this.pricePerDay = pricePerDay;
+    }
+
+    public Boolean getHasDriver() {
+        return hasDriver;
+    }
+    public void setHasDriver(Boolean hasDriver) {
+        this.hasDriver = hasDriver;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public CarType getCarType() {
+        return carType;
+    }
+    public void setCarType(CarType carType) {
+        this.carType = carType;
+    }
+
+    public CarBrand getBrand() {
+        return brand;
+    }
+    public void setBrand(CarBrand brand) {
+        this.brand = brand;
+    }
 }
-
-

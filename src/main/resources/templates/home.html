@@ -76,8 +76,6 @@
     </div>
   </div>
 </div>
-<!-- About End -->
-
 <!-- Fact Counter -->
 <div class="container-fluid counter bg-secondary py-5">
   <div class="container py-5">
@@ -133,8 +131,6 @@
     </div>
   </div>
 </div>
-<!-- Fact Counter -->
-
 <!-- Services Start -->
 <div class="container-fluid service py-5">
   <div class="container py-5">
@@ -201,8 +197,6 @@
     </div>
   </div>
 </div>
-<!-- Services End -->
-
 <!-- Car categories Start -->
 <div class="container-fluid categories py-5">
   <div class="container py-5">
@@ -224,7 +218,7 @@
             <h4 th:text="${car.name}"></h4>
             <div class="mb-4">
               <h4 class="bg-white text-primary rounded-pill py-2 px-4 mb-0"
-                  th:text="${#numbers.formatDecimal(car.pricePerDay, 0, 'COMMA', 0, 'POINT')} + ' VND/Day'">
+                  th:text="${#numbers.formatDecimal(car.pricePerDay, 0, 'COMMA', 0, 'POINT')} + ' $/DAY'">
               </h4>
             </div>
             <   <a th:href="@{'/car/' + ${car.id}}"
@@ -237,14 +231,6 @@
     </div>
   </div>
 </div>
-<!-- Car categories End -->
-
-
-
-
-
-
-
 <!-- Car Steps Start -->
 <div class="container-fluid steps py-5">
   <div class="container py-5">
@@ -278,7 +264,6 @@
     </div>
   </div>
 </div>
-<!-- Car Steps End -->
 
 <!-- Blog Start -->
 <div class="container-fluid blog py-5">

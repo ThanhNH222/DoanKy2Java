@@ -1,0 +1,90 @@
+/* ===== Global ===== */
+body {
+    background: #0f172a; /* Dark background */
+    color: #fff;
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: #1e293b;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+}
+.sidebar h4 {
+    color: #fff;
+    margin-bottom: 1.5rem;
+}
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: #cbd5e1;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.sidebar a:hover,
+.sidebar a.active {
+    background: #334155;
+    color: #fff;
+}
+
+/* ===== Main content ===== */
+.content {
+    margin-left: 240px; /* 220 + padding */
+    padding: 24px;
+}
+
+/* ===== Cards & panels ===== */
+.card-dark {
+    background: #1e293b;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    color: #fff;
+    padding: 24px;
+}
+.card-stat {
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    color: #fff;
+}
+.bg-orange { background: #f97316; }
+.bg-green  { background: #10b981; }
+.bg-purple { background: #6366f1; }
+.bg-blue   { background: #3b82f6; }
+
+/* ===== Tables ===== */
+.table-dark th {
+    background: #334155 !important;
+    color: #fff;
+}
+.table-dark td,
+.table-dark th {
+    color: #fff;
+    vertical-align: middle;
+}
+.table-dark tbody tr:hover {
+    background: #475569;
+}
+
+/* ===== Buttons ===== */
+.btn-soft {
+    border-radius: 8px;
+}
+
+/* ===== Charts container ===== */
+.chart-card {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* Alerts, forms already get Bootstrap styling */

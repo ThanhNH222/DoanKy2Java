@@ -70,15 +70,26 @@
                                     <li><strong>Brand:</strong> <span th:text="${car.brand.name}"></span></li>
                                     <li><strong>Status:</strong> <span th:text="${car.status}"></span></li>
                                     <li><strong>Deposit:</strong>
-                                        <span th:text="${#numbers.formatDecimal(car.depositAmount, 0, 'POINT', 0, 'COMMA')} + ' VND'"></span>
+                                        <span th:text="${#numbers.formatDecimal(car.depositAmount, 0, 'POINT', 0, 'COMMA')} + ' $'"></span>
                                     </li>
                                 </ul>
                             </div>
 
                             <!-- Extra Block -->
                             <div class="p-3 bg-light rounded shadow-sm">
-                                <h5>Additional Information</h5>
-                                <p>Here you can add: rental policies, customer reviews, or detailed pricing…</p>
+                                <h5>Welcome to RentCar – Your Trusted Car Rental Service
+                                </h5>
+                                <p>Need a reliable vehicle for business, travel, or a weekend getaway? RentCar offers a wide range of well-maintained sedans, SUVs, luxury models, and family vans to suit every journey.</p>
+
+                                    <p><strong>Transparent Pricing</strong>: No hidden fees. Daily, hourly, and monthly rates are clearly listed.</p>
+
+                                    <p><strong>Flexible Options</strong>: Choose self-drive or professional driver service, with easy online booking and secure payment.</p>
+
+                                    <p><strong>Quality & Safety</strong>: Each car is thoroughly inspected and sanitized before every rental for your comfort and peace of mind.</p>
+
+                                    <p><strong>24/7 Support</strong>: Our team is always ready to assist with reservations, roadside help, and trip planning.</p>
+
+                                    <p>Whether it’s a quick city errand, a family vacation, or an executive event, RentCar delivers the comfort and freedom you deserve.</p>
                             </div>
                         </div>
 
@@ -109,7 +120,7 @@
                                         <div class="mt-2 text-end">
                                             <span class="text-light">Price: </span>
                                             <span id="rentalPrice" class="text-warning fw-bold"
-                                                  th:text="${#numbers.formatDecimal(car.rentalRates[0].price, 0, 'COMMA', 0, 'POINT')}">...</span> usd
+                                                  th:text="${#numbers.formatDecimal(car.rentalRates[0].price, 0, 'COMMA', 0, 'POINT')}">...</span> $
                                         </div>
                                     </div>
 

@@ -31,7 +31,7 @@
           <!-- Giá, loại xe, hãng -->
           <p class="card-text mb-2">
             <b>Giá/ngày:</b>
-            <span th:text="${#numbers.formatDecimal(car.pricePerDay, 0, 'COMMA', 0, 'POINT')}"></span> VND <br>
+            <span th:text="${#numbers.formatDecimal(car.pricePerDay, 0, 'COMMA', 0, 'POINT')}"></span> $ <br>
             <b>Loại:</b> <span th:text="${car.carType.name}"></span><br>
             <b>Hãng:</b> <span th:text="${car.brand.name}"></span>
           </p>

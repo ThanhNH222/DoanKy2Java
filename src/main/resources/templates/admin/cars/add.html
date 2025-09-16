@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Car</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/form.css}">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h4>🚗 Car Rental Admin</h4>
+    <a href="/admin">📊 Dashboard</a>
+    <a href="/admin/cars" class="active">🚘 Cars</a>
+    <a href="/admin/orders">👥 Rental Orders</a>
+</div>
+
+<!-- Content -->
+<div class="content">
+    <div class="card-dark">
+        <h3>➕ Add Car</h3>
+
+        <!-- enctype rất quan trọng để upload ảnh -->
+        <form th:action="@{/admin/cars/save}"
+              th:object="${car}"
+              method="post"
+              enctype="multipart/form-data"
+              class="mt-4">
+            <!-- Car Name -->
+            <div class="mb-3">
+                <label class="form-label">Car Name</label>
+                <input type="text" th:field="*{name}" class="form-control" required>
+            </div>
+
+            <!-- License Plate -->
+            <div class="mb-3">
+                <label class="form-label">License Plate</label>
+                <input type="text" th:field="*{licensePlate}" class="form-control" required>
+            </div>
+
+            <!-- Seats -->
+            <div class="mb-3">
+                <label class="form-label">Seats</label>
+                <input type="number" th:field="*{seatNumber}" class="form-control" min="1" required>
+            </div>
+
+            <!-- Price per Day -->
+            <div class="mb-3">
+                <label class="form-label">Price per Day</label>
+                <input type="number" th:field="*{pricePerDay}" class="form-control" step="0.01" required>
+            </div>
+
+            <!-- Deposit Amount -->
+            <div class="mb-3">
+                <label class="form-label">Deposit Amount</label>
+                <input type="number" th:field="*{depositAmount}" class="form-control" step="0.01">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <input type="text" th:field="*{status}" class="form-control" placeholder="e.g. available, maintenance">
+            </div>
+
+            <!-- Has Driver -->
+            <div class="mb-3 form-check">
+                <input type="checkbox" th:field="*{hasDriver}" class="form-check-input" id="hasDriverCheckbox">
+                <label class="form-check-label" for="hasDriverCheckbox">Has Driver</label>
+            </div>
+
+            <!-- Car Type -->
+            <div class="mb-3">
+                <label class="form-label">Car Type</label>
+                <select name="carTypeId" class="form-select">
+                    <option value="">-- Select Car Type --</option>
+                    <option th:each="type : ${types}"
+                            th:value="${type.id}"
+                            th:text="${type.name}">
+                    </option>
+                </select>
+                <small class="text-muted">Or enter new type below</small>
+                <input type="text" name="newCarType" class="form-control mt-2" placeholder="Enter new car type">
+            </div>
+
+            <!-- Brand -->
+            <div class="mb-3">
+                <label class="form-label">Brand</label>
+                <select name="brandId" class="form-select">
+                    <option value="">-- Select Brand --</option>
+                    <option th:each="brand : ${brands}"
+                            th:value="${brand.id}"
+                            th:text="${brand.name}">
+                    </option>
+                </select>
+                <small class="text-muted">Or enter new brand below</small>
+                <input type="text" name="newBrand" class="form-control mt-2" placeholder="Enter new brand">
+            </div>
+
+            <!-- Car Image -->
+            <div class="mb-3">
+                <label class="form-label">Car Image</label>
+                <input type="file" name="imageFile" class="form-control" accept="image/*">
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex gap-2 flex-wrap">
+                <button type="submit" class="btn btn-primary">💾 Save</button>
+                <a th:href="@{/admin/cars}" class="btn btn-secondary">⬅ Back</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

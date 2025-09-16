@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Car</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/form.css}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h4>🚗 Car Rental Admin</h4>
+    <a href="/admin">📊 Dashboard</a>
+    <a href="/admin/cars" class="active">🚘 Cars</a>
+    <a href="/admin/orders">👥 Rental Orders</a>
+</div>
+
+<div class="content">
+    <div class="card-dark">
+        <h3>✏️ Edit Car</h3>
+
+        <form th:action="@{/admin/cars/save}" th:object="${car}" method="post" enctype="multipart/form-data" class="mt-4">
+
+            <input type="hidden" th:field="*{id}" />
+
+            <!-- Car Name -->
+            <div class="mb-3">
+                <label>Car Name</label>
+                <input type="text" th:field="*{name}" class="form-control" required>
+            </div>
+
+            <!-- License Plate -->
+            <div class="mb-3">
+                <label>License Plate</label>
+                <input type="text" th:field="*{licensePlate}" class="form-control" required>
+            </div>
+
+            <!-- Seats -->
+            <div class="mb-3">
+                <label>Seats</label>
+                <input type="number" th:field="*{seatNumber}" class="form-control" required>
+            </div>
+
+            <!-- Price per Day -->
+            <div class="mb-3">
+                <label>Price per Day</label>
+                <input type="number" th:field="*{pricePerDay}" class="form-control" step="0.01" required>
+            </div>
+
+            <!-- Deposit Amount -->
+            <div class="mb-3">
+                <label>Deposit Amount</label>
+                <input type="number" th:field="*{depositAmount}" class="form-control" step="0.01">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label>Description</label>
+                <textarea th:field="*{description}" class="form-control"></textarea>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+                <label>Status</label>
+                <input type="text" th:field="*{status}" class="form-control">
+            </div>
+
+            <!-- Has Driver -->
+            <div class="mb-3 form-check">
+                <input type="checkbox" th:field="*{hasDriver}" class="form-check-input" id="hasDriverCheckbox">
+                <label class="form-check-label" for="hasDriverCheckbox">Has Driver</label>
+            </div>
+
+            <!-- Car Image -->
+            <div class="mb-3">
+                <label>Car Image</label>
+                <input type="file" name="imageFile" class="form-control" accept="image/*" onchange="previewImage(event)">
+            </div>
+
+            <!-- Image Preview -->
+            <div class="mb-3">
+                <img id="imagePreview" th:if="${car.imageUrl != null}" th:src="@{${car.imageUrl}}"
+                     style="max-width:200px; display:block;">
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <button type="submit" class="btn btn-primary btn-soft">💾 Update</button>
+                <a th:href="@{/admin/cars}" class="btn btn-secondary btn-soft">⬅ Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+      const reader = new FileReader();
+      reader.onload = function(){
+        const output = document.getElementById('imagePreview');
+        output.src = reader.result;
+        output.style.display = 'block';
+      }
+      reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+</body>
+</html>
